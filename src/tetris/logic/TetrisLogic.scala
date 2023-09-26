@@ -18,6 +18,27 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def this() =
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
+  val tetromino = spawnTetromino() // initializes the game
+  def spawnTetromino() : Tetromino = {
+    val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
+                                                       // a random tetromino
+    var newTetromino = Tetromino(randomNum)
+    if(gridDims.width % 2 == 0)
+      {
+        val anchorY : Int = gridDims.width / 2 - 1
+        newTetromino.anchorY = anchorY
+      }
+    else
+      {
+        val anchorY : Int = gridDims.width / 2
+        newTetromino.anchorY = anchorY
+      }
+
+
+
+    newTetromino
+  }
+
   // TODO implement me
   def rotateLeft(): Unit = ()
 
