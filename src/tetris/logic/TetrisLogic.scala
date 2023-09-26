@@ -18,8 +18,8 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def this() =
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
-  val tetromino : Tetromino = spawnTetromino()// initializes the game
-  val tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape
+  var tetromino : Tetromino = spawnTetromino()// initializes the game
+  var tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape
   def spawnTetromino() : Tetromino = {
     val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
                                                         // a random tetromino
@@ -37,6 +37,12 @@ class TetrisLogic(val randomGen: RandomGenerator,
     newTetromino
   }
 
+  def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit = {
+    tetromino.anchorX += xDelta
+    tetromino.anchorY += yDelta
+    tetrominoBody = tetromino.getTetrominoShape
+  }
+
   // TODO implement me
   def rotateLeft(): Unit = ()
 
@@ -44,13 +50,21 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def rotateRight(): Unit = ()
 
   // TODO implement me
-  def moveLeft(): Unit = ()
+  def moveLeft(): Unit =
+  {
+    moveTetromino(tetromino, xDelta = -1, yDelta = 0)
+  }
 
   // TODO implement me
-  def moveRight(): Unit = ()
+  def moveRight(): Unit =
+  {
+    moveTetromino(tetromino, xDelta = 1, yDelta = 0)
+  }
 
   // TODO implement me
-  def moveDown(): Unit = ()
+  def moveDown(): Unit = {
+    moveTetromino(tetromino, xDelta = 0, yDelta = 1)
+  }
 
   // TODO implement me
   def doHardDrop(): Unit = ()
