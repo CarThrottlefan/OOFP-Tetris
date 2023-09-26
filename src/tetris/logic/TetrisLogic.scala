@@ -26,13 +26,13 @@ class TetrisLogic(val randomGen: RandomGenerator,
     val newTetromino = Tetromino(randomNum)
     if(gridDims.width % 2 == 0)
       {
-        val anchorY : Int = gridDims.width / 2 - 1
-        newTetromino.anchorY = anchorY
+        val anchorX : Int = gridDims.width / 2 - 1
+        newTetromino.anchorX = anchorX
       }
     else
       {
-        val anchorY : Int = gridDims.width / 2
-        newTetromino.anchorY = anchorY
+        val anchorX : Int = gridDims.width / 2
+        newTetromino.anchorX = anchorX
       }
     newTetromino
   }

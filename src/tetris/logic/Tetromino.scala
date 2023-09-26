@@ -1,7 +1,7 @@
 package tetris.logic
 case class Tetromino (randIndex: Int){
   var anchorX : Int = 0
-  var anchorY: Int = 0
+  var anchorY: Int = 1
   var anchor : Point= Point(0,0)
 
   var cellType : CellType =  ICell
@@ -66,7 +66,7 @@ case class Tetromino (randIndex: Int){
      //Z
      case 6 =>
        val firstRow = Vector[Point](Point(anchorX - 1, anchorY - 1), Point(anchorX, anchorY - 1))
-       val secondRow = Vector[Point](anchor, Point(anchorX - 1, anchorY))
+       val secondRow = Vector[Point](anchor, Point(anchorX + 1, anchorY))
        val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
        newTetromino = tetromino
        cellType = ZCell
