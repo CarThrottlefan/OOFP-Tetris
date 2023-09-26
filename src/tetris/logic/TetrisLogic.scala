@@ -19,7 +19,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
   val tetromino : Tetromino = spawnTetromino()// initializes the game
-  val tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape()
+  val tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape
   def spawnTetromino() : Tetromino = {
     val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
                                                         // a random tetromino
