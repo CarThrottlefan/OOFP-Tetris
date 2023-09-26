@@ -1,21 +1,75 @@
 package tetris.logic
-case class Tetromino (val randIndex: Int){
+case class Tetromino (randIndex: Int){
   var anchorX : Int = 0
   var anchorY: Int = 0
+  var anchor : Point= Point(0,0)
 
-  val anchor : Point = Point(anchorX,anchorY)
+  var cellType : CellType =  ICell
 
- def getTetrominoShape(randIndex : Int): Vector[Vector[Point]]  =
+ def getTetrominoShape: Vector[Vector[Point]]  =
  {
+   anchor = Point(anchorX,anchorY)
    var newTetromino : Vector[Vector[Point]] = Vector[Vector[Point]] ()
    randIndex match
    {
-     case 0 =>
+     //I
+     case 0 => //TODO: Replace the lines below with a function
        val firstRow = Vector[Point]()
-       val secondRow = Vector[Point](Point(anchorX - 1, anchorY - 1), anchor,
-         Point(anchorX + 1, anchorY + 1), Point(anchorX + 2, anchorY + 2))
+       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
+         Point(anchorX + 1, anchorY), Point(anchorX + 2, anchorY))
        val tetromino = Vector[Vector[Point]] () :+ firstRow :+ secondRow
        newTetromino = tetromino
+
+     //J
+     case 1 =>
+       val firstRow = Vector[Point](Point(anchorX - 1, anchorY - 1))
+       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
+         Point(anchorX + 1, anchorY))
+       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
+       newTetromino = tetromino
+       cellType = JCell
+
+     //L
+     case 2 =>
+       val firstRow = Vector[Point](Point(anchorX + 1, anchorY - 1))
+       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
+         Point(anchorX + 1, anchorY))
+       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
+       newTetromino = tetromino
+       cellType = LCell
+
+     //O
+     case 3 =>
+       val firstRow = Vector[Point](Point(anchorX, anchorY - 1), Point(anchorX + 1, anchorY - 1))
+       val secondRow = Vector[Point](anchor, Point(anchorX + 1, anchorY))
+       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
+       newTetromino = tetromino
+       cellType = OCell
+
+     //S
+     case 4 =>
+       val firstRow = Vector[Point](Point(anchorX, anchorY - 1), Point(anchorX + 1, anchorY - 1))
+       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor)
+       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
+       newTetromino = tetromino
+       cellType = SCell
+
+     //T
+     case 5 =>
+       val firstRow = Vector[Point](Point(anchorX, anchorY - 1))
+       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
+         Point(anchorX + 1, anchorY))
+       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
+       newTetromino = tetromino
+       cellType = TCell
+
+     //Z
+     case 6 =>
+       val firstRow = Vector[Point](Point(anchorX - 1, anchorY - 1), Point(anchorX, anchorY - 1))
+       val secondRow = Vector[Point](anchor, Point(anchorX - 1, anchorY))
+       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
+       newTetromino = tetromino
+       cellType = ZCell
    }
    newTetromino
  }

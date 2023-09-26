@@ -18,11 +18,12 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def this() =
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
-  val tetromino = spawnTetromino() // initializes the game
+  val tetromino : Tetromino = spawnTetromino()// initializes the game
+  val tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape()
   def spawnTetromino() : Tetromino = {
     val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
-                                                       // a random tetromino
-    var newTetromino = Tetromino(randomNum)
+                                                        // a random tetromino
+    val newTetromino = Tetromino(randomNum)
     if(gridDims.width % 2 == 0)
       {
         val anchorY : Int = gridDims.width / 2 - 1
@@ -33,9 +34,6 @@ class TetrisLogic(val randomGen: RandomGenerator,
         val anchorY : Int = gridDims.width / 2
         newTetromino.anchorY = anchorY
       }
-
-
-
     newTetromino
   }
 
@@ -61,7 +59,16 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def isGameOver: Boolean = false
 
   // TODO implement me
-  def getCellType(p : Point): CellType = Empty
+  def getCellType(p : Point): CellType = {
+    if (tetrominoBody.exists(row => row.contains(p)))
+      {
+        return tetromino.cellType
+      }
+    else
+      {
+        return Empty
+      }
+  }
 }
 
 object TetrisLogic {
