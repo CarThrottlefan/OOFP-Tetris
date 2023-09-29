@@ -73,4 +73,28 @@ case class Tetromino (randIndex: Int){
    }
    newTetromino
  }
+
+  def rotateTetromino(tetromino: Tetromino) : Tetromino =
+  {
+    tetromino.cellType match
+    {
+      case ICell =>
+        //call class for this type of cell (newTetromino)
+        //tetromino = newTetromino
+
+      case JCell =>
+
+      case LCell =>
+
+      case OCell =>
+
+      case SCell =>
+
+      case TCell =>
+
+      case ZCell =>
+
+    }
+    tetromino
+  }
 }
