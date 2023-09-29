@@ -1,3 +1,6 @@
 package tetris.logic
 
-case class rotateIcell()
+case class rotateIcell(tetromino: Tetromino)
+{
+
+}
