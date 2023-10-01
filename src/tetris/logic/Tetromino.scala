@@ -1,101 +1,87 @@
 package tetris.logic
 case class Tetromino (){
   var randIndex : Int = 0
-  var anchorX : Int = 0
-  var anchorY: Int = 1
   var anchor : Point = Point(0,0)
-  var body : Vector[Vector[Point]] = Vector[Vector[Point]] ()
+  var body : Vector[Point] = Vector[Point] ()
   var cellType : CellType =  ICell
+  var relativeTetromino : Vector[Point] = Vector()
 
- def getTetrominoShape: Vector[Vector[Point]]  =
+ def getTetrominoShape: Vector[Point]  =
  {
-   anchor = Point(anchorX,anchorY)
-   var newTetromino : Vector[Vector[Point]] = Vector[Vector[Point]] ()
+   val anchorX = anchor.x
+   val anchorY = anchor.y
+   //anchor = Point(anchorX,anchorY)
+   var newTetromino : Vector[Point] = Vector()
+   //var relativeTetromino : Vector[Point] = Vector()
    randIndex match
    {
      //I
-     case 0 => //TODO: Replace the lines below with a function
-       val firstRow = Vector[Point]()
-       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
-         Point(anchorX + 1, anchorY), Point(anchorX + 2, anchorY))
-       val tetromino = Vector[Vector[Point]] () :+ firstRow :+ secondRow
-       newTetromino = tetromino
+     /*case 0 => //TODO: Replace the lines below with a function
+       newTetromino = Vector(Point(anchorX - 1, anchorY), anchor, Point(anchorX + 1, anchorY), Point(anchorX + 2, anchorY))*/
+     case 0 =>
+       relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(1, 0), Point(2, 0))
+       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
 
      //J
      case 1 =>
-       val firstRow = Vector[Point](Point(anchorX - 1, anchorY - 1))
-       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
-         Point(anchorX + 1, anchorY))
-       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
-       newTetromino = tetromino
-       cellType = JCell
+       /*newTetromino = Vector(
+         Vector(Point(anchorX - 1, anchorY - 1), Point(anchorX - 1, anchorY), anchor, Point(anchorX + 1, anchorY))
+       )*/
+          relativeTetromino = Vector(Point(-1,-1),Point(-1,0), Point(0,0), Point(1,0))
+          newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+          cellType = JCell
 
      //L
      case 2 =>
-       val firstRow = Vector[Point](Point(anchorX + 1, anchorY - 1))
-       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
-         Point(anchorX + 1, anchorY))
-       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
-       newTetromino = tetromino
+       relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(1, 0), Point(1, -1))
+       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       cellType = LCell
+
+     case 3 =>
+       relativeTetromino = Vector(Point(0, 0), Point(1, 0), Point(1, -1), Point(0, -1))
+       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       cellType = OCell
+
+     case 4 =>
+       relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(0, -1), Point(1, -1))
+       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       cellType = SCell
+
+     case 5 =>
+       relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(0, -1), Point(1, 0))
+       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       cellType = TCell
+
+     case 6 =>
+       relativeTetromino = Vector(Point(-1, -1), Point(0, -1), Point(0, 0), Point(1, 0))
+       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       cellType = ZCell
+     /*case 2 =>
+       newTetromino = Vector(
+         Vector(Point(anchorX + 1, anchorY - 1), Point(anchorX - 1, anchorY), anchor, Point(anchorX + 1, anchorY))
+       )
        cellType = LCell
 
      //O
      case 3 =>
-       val firstRow = Vector[Point](Point(anchorX, anchorY - 1), Point(anchorX + 1, anchorY - 1))
-       val secondRow = Vector[Point](anchor, Point(anchorX + 1, anchorY))
-       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
-       newTetromino = tetromino
+       newTetromino = Vector(Vector(Point(anchorX, anchorY - 1), Point(anchorX + 1, anchorY - 1), Point(anchorX, anchorY), Point(anchorX + 1, anchorY)))
        cellType = OCell
 
      //S
      case 4 =>
-       val firstRow = Vector[Point](Point(anchorX, anchorY - 1), Point(anchorX + 1, anchorY - 1))
-       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor)
-       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
-       newTetromino = tetromino
+       newTetromino = Vector(Vector(Point(anchorX, anchorY - 1), Point(anchorX + 1, anchorY - 1), anchor, Point(anchorX - 1, anchorY)))
        cellType = SCell
 
      //T
      case 5 =>
-       val firstRow = Vector[Point](Point(anchorX, anchorY - 1))
-       val secondRow = Vector[Point](Point(anchorX - 1, anchorY), anchor,
-         Point(anchorX + 1, anchorY))
-       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
-       newTetromino = tetromino
+       newTetromino = Vector(Vector(Point(anchorX, anchorY - 1), Point(anchorX - 1, anchorY), anchor, Point(anchorX + 1, anchorY)))
        cellType = TCell
 
      //Z
      case 6 =>
-       val firstRow = Vector[Point](Point(anchorX - 1, anchorY - 1), Point(anchorX, anchorY - 1))
-       val secondRow = Vector[Point](anchor, Point(anchorX + 1, anchorY))
-       val tetromino = Vector[Vector[Point]]() :+ firstRow :+ secondRow
-       newTetromino = tetromino
-       cellType = ZCell
+       newTetromino = Vector(Vector(Point(anchorX - 1, anchorY - 1), Point(anchorX, anchorY - 1), anchor, Point(anchorX + 1, anchorY)))
+       cellType = ZCell*/
    }
    newTetromino
  }
-
-  def rotateTetromino(tetromino: Tetromino) : Tetromino =
-  {
-    tetromino.cellType match
-    {
-      case ICell =>
-        //call class for this type of cell (newTetromino)
-        //tetromino = newTetromino
-
-      case JCell =>
-
-      case LCell =>
-
-      case OCell =>
-
-      case SCell =>
-
-      case TCell =>
-
-      case ZCell =>
-
-    }
-    tetromino
-  }
 }

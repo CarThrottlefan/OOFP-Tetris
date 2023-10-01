@@ -50,12 +50,12 @@ abstract class abstractTetromino {
     typeOfTetromino match {
       case 'I' =>
         val newX = point.y
-        val newY = 0 - point.x + 1
+        val newY = -point.x + 1
         Point(newX, newY)
 
       case ' ' =>
         val newX = point.y
-        val newY = 0 - point.x
+        val newY = -point.x
         Point(newX, newY)
 
       case 'O' =>
@@ -66,12 +66,12 @@ abstract class abstractTetromino {
   def rotateRight(point: Point, typeOfTetromino: Char): Point = {
     typeOfTetromino match {
       case 'I' =>
-        val newX = 0 - point.y + 1
+        val newX = -point.y + 1
         val newY = point.x
         Point(newX, newY)
 
       case ' ' =>
-        val newX = 0 - point.y
+        val newX = -point.y
         val newY = point.x
         Point(newX, newY)
 
@@ -81,23 +81,29 @@ abstract class abstractTetromino {
   }
 }
 
-class rotateIcell(tetromino: Tetromino) extends abstractTetromino {
-  val tetrominoBody: Vector[Vector[Point]] = tetromino.body
-  val rotatedLeft: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'I')))
-  val rotatedRight: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'I')))
+/*class rotateICell(tetromino: Tetromino) extends abstractTetromino {
+  val tetrominoBody: Vector[Point] = tetromino.body
+  val rotatedLeft: Vector[Point] = rotateICellLeft()
+  val rotatedRight: Vector[Point] = rotateICellRight()
+
+  private def rotateICellLeft(): Vector[Vector[Point]] =
+    tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'I')))
+
+  private def rotateICellRight(): Vector[Vector[Point]] =
+    tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'I')))
 }
 
 class rotateOtherCell(tetromino: Tetromino) extends abstractTetromino {
-  val tetrominoBody: Vector[Vector[Point]] = tetromino.body
-  val rotatedLeft: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, ' ')))
-  val rotatedRight: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, ' ')))
+  val tetrominoBody: Vector[Point] = tetromino.body
+  val rotatedLeft: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, ' ')))
+  val rotatedRight: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, ' ')))
 }
 
 class rotateOCell(tetromino: Tetromino) extends abstractTetromino {
-  val tetrominoBody: Vector[Vector[Point]] = tetromino.body
-  val rotatedLeft: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'O')))
-  val rotatedRight: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'O')))
-}
+  val tetrominoBody: Vector[Point] = tetromino.body
+  val rotatedLeft: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'O')))
+  val rotatedRight: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'O')))
+}*/
 
 
 
