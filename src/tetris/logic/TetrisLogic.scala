@@ -19,11 +19,14 @@ class TetrisLogic(val randomGen: RandomGenerator,
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
   var tetromino : Tetromino = spawnTetromino()// initializes the game
-  var tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape
+  //var tetrominoBody: Vector[Vector[Point]] = tetromino.getTetrominoShape
+  tetromino.body = tetromino.getTetrominoShape
+
   def spawnTetromino() : Tetromino = {
     val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
                                                         // a random tetromino
-    val newTetromino = Tetromino(randomNum)
+    val newTetromino = Tetromino()
+    newTetromino.randIndex = randomNum
     if(gridDims.width % 2 == 0)
       {
         val anchorX : Int = gridDims.width / 2 - 1
@@ -40,14 +43,54 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit = {
     tetromino.anchorX += xDelta
     tetromino.anchorY += yDelta
-    tetrominoBody = tetromino.getTetrominoShape
+    tetromino.body = tetromino.getTetrominoShape
   }
 
   // TODO implement me
-  def rotateLeft(): Unit = ()
+  def rotateLeft(): Unit = {
+    val tetrominoType = tetromino.cellType
+
+    tetrominoType match
+    {
+      case ICell =>
+        val newTetromino = new rotateIcell(tetromino).rotatedLeft
+        tetromino.body = newTetromino
+
+      case JCell | LCell | SCell | TCell | ZCell =>
+        val newTetromino = new rotateOtherCell(tetromino).rotatedLeft
+        tetromino.body = newTetromino
+
+      case OCell =>
+        val newTetromino = new rotateOCell(tetromino).rotatedLeft
+        tetromino.body = newTetromino
+    }
+  }
 
   // TODO implement me
-  def rotateRight(): Unit = ()
+  def rotateRight(): Unit = {
+    val tetrominoType = tetromino.cellType
+
+    tetrominoType match {
+      case ICell =>
+        val newTetrominoBody = new rotateIcell(tetromino).rotatedRight
+        val newTetromino = Tetromino()
+        newTetromino.body = newTetrominoBody
+        tetromino = newTetromino
+
+      case JCell | LCell | SCell | TCell | ZCell =>
+        val newTetrominoBody = new rotateOtherCell(tetromino).rotatedRight
+        val newTetromino = Tetromino()
+        newTetromino.body = newTetrominoBody
+        tetromino = newTetromino
+
+      case OCell =>
+        //val newTetromino = new rotateOCell(tetromino).rotatedRight
+        val newTetrominoBody = new rotateOCell(tetromino).rotatedRight
+        val newTetromino = Tetromino()
+        newTetromino.body = newTetrominoBody
+        tetromino = newTetromino
+    }
+  }
 
   // TODO implement me
   def moveLeft(): Unit =
@@ -74,7 +117,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   // TODO implement me
   def getCellType(p : Point): CellType = {
-    if (tetrominoBody.exists(row => row.contains(p)))
+    if (tetromino.body.exists(row => row.contains(p)))
       {
         return tetromino.cellType
       }
@@ -87,7 +130,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
 object TetrisLogic {
 
-  val FramesPerSecond: Int = 5 // change this to speed up or slow down the game
+  val FramesPerSecond: Int = 2 // change this to speed up or slow down the game
 
   val DrawSizeFactor = 1.0 // increase this to make the game bigger (for high-res screens)
   // or decrease to make game smaller

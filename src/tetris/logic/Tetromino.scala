@@ -1,9 +1,10 @@
 package tetris.logic
-case class Tetromino (randIndex: Int){
+case class Tetromino (){
+  var randIndex : Int = 0
   var anchorX : Int = 0
   var anchorY: Int = 1
-  var anchor : Point= Point(0,0)
-
+  var anchor : Point = Point(0,0)
+  var body : Vector[Vector[Point]] = Vector[Vector[Point]] ()
   var cellType : CellType =  ICell
 
  def getTetrominoShape: Vector[Vector[Point]]  =
