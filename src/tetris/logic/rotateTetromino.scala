@@ -86,10 +86,10 @@ abstract class abstractTetromino {
   val rotatedLeft: Vector[Point] = rotateICellLeft()
   val rotatedRight: Vector[Point] = rotateICellRight()
 
-  private def rotateICellLeft(): Vector[Vector[Point]] =
+  private def rotateICellLeft(): Vector[Point] =
     tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'I')))
 
-  private def rotateICellRight(): Vector[Vector[Point]] =
+  private def rotateICellRight(): Vector[Point] =
     tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'I')))
 }
 

@@ -43,11 +43,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
   }
 
   def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit = {
-    //tetromino.anchorX += xDelta
-    //tetromino.anchor = Point(tetromino.anchor.x + xDelta, tetromino.anchor.y)
-    //tetromino.anchorY += yDelta
     tetromino.anchor = Point(tetromino.anchor.x + xDelta, tetromino.anchor.y + yDelta)
-    //tetromino.body = tetromino.getTetrominoShape
     tetromino.body = tetromino.body.map(point => Point(point.x + xDelta, point.y + yDelta))
   }
 
@@ -56,16 +52,20 @@ class TetrisLogic(val randomGen: RandomGenerator,
     val tetrominoType = tetromino.cellType
 
     tetrominoType match{
+      case ICell =>
+        val rotatedRelative = tetromino.relativeTetromino.map(point => Point(point.y, -point.x + 1))
+        val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
+        tetromino.body = rotatedTetromino
+        tetromino.relativeTetromino = rotatedRelative
+
       case JCell | LCell | SCell | TCell | ZCell =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(point.y, -point.x))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
         //val newTetromino = Tetromino()
         tetromino.body = rotatedTetromino
         tetromino.relativeTetromino = rotatedRelative
-        //tetromino = newTetromino
 
       case OCell =>
-        rotateLeft()
     }
 
     /*tetrominoType match
@@ -92,6 +92,12 @@ class TetrisLogic(val randomGen: RandomGenerator,
     val tetrominoType = tetromino.cellType
 
     tetrominoType match {
+      case ICell =>
+        val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y + 1, point.x))
+        val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
+        tetromino.body = rotatedTetromino
+        tetromino.relativeTetromino = rotatedRelative
+
       case JCell | LCell | SCell | TCell | ZCell =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y, point.x))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
@@ -100,7 +106,6 @@ class TetrisLogic(val randomGen: RandomGenerator,
         tetromino.relativeTetromino = rotatedRelative
 
       case OCell =>
-        rotateRight()
       //tetromino = newTetromino
     }
 
