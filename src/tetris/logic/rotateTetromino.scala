@@ -1,7 +1,9 @@
 package tetris.logic
 
-abstract class abstractTetromino(tetromino: Tetromino) {
-  def rotateLeft(typeOfTetromino: Char): (Vector[Point], Vector[Point]) = {
+abstract class abstractTetromino(tetromino: Tetromino)
+{
+  def rotateLeft(typeOfTetromino: Char): (Vector[Point], Vector[Point]) =
+  {
     typeOfTetromino match
     {
       case 'I' =>
@@ -20,8 +22,10 @@ abstract class abstractTetromino(tetromino: Tetromino) {
 
   }
 
-  def rotateRight(typeOfTetromino: Char): (Vector[Point], Vector[Point]) = {
-    typeOfTetromino match {
+  def rotateRight(typeOfTetromino: Char): (Vector[Point], Vector[Point]) =
+  {
+    typeOfTetromino match
+    {
       case 'I' =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y + 1, point.x))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))

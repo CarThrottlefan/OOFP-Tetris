@@ -10,7 +10,8 @@ import tetris.logic.TetrisLogic._
  */
 class TetrisLogic(val randomGen: RandomGenerator,
                   val gridDims : Dimensions,
-                  val initialBoard: Seq[Seq[CellType]]) {
+                  val initialBoard: Seq[Seq[CellType]])
+{
 
   def this(random: RandomGenerator, gridDims : Dimensions) =
     this(random, gridDims, makeEmptyBoard(gridDims))
@@ -21,11 +22,12 @@ class TetrisLogic(val randomGen: RandomGenerator,
   var tetromino : Tetromino = spawnTetromino()// initializes the game
   tetromino.body = tetromino.getTetrominoShape
 
-  def spawnTetromino() : Tetromino = {
+  def spawnTetromino() : Tetromino =
+  {
     val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
                                                         // a random tetromino
     val newTetromino = Tetromino()
-    newTetromino.randIndex = randomNum //TODO change back to randomNum
+    newTetromino.randIndex = randomNum
     if(gridDims.width % 2 == 0)
       {
         val anchorX : Int = gridDims.width / 2 - 1
@@ -39,12 +41,14 @@ class TetrisLogic(val randomGen: RandomGenerator,
     newTetromino
   }
 
-  def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit = {
+  def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit =
+  {
     tetromino.anchor = Point(tetromino.anchor.x + xDelta, tetromino.anchor.y + yDelta)
     tetromino.body = tetromino.body.map(point => Point(point.x + xDelta, point.y + yDelta))
   }
 
-  def rotateLeft(): Unit = {
+  def rotateLeft(): Unit =
+  {
     val tetrominoType = tetromino.cellType
 
     tetrominoType match
@@ -110,7 +114,8 @@ class TetrisLogic(val randomGen: RandomGenerator,
   // TODO implement me
   def isGameOver: Boolean = false
 
-  def getCellType(p : Point): CellType = {
+  def getCellType(p : Point): CellType =
+  {
     if (tetromino.body.contains(p))
       {
         return tetromino.cellType
@@ -122,7 +127,8 @@ class TetrisLogic(val randomGen: RandomGenerator,
   }
 }
 
-object TetrisLogic {
+object TetrisLogic
+{
 
   val FramesPerSecond: Int = 2 // change this to speed up or slow down the game
 
@@ -131,7 +137,8 @@ object TetrisLogic {
 
 
 
-  def makeEmptyBoard(gridDims : Dimensions): Seq[Seq[CellType]] = {
+  def makeEmptyBoard(gridDims : Dimensions): Seq[Seq[CellType]] =
+  {
     val emptyLine = Seq.fill(gridDims.width)(Empty)
     Seq.fill(gridDims.height)(emptyLine)
   }

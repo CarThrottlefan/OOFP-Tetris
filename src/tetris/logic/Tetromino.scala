@@ -6,52 +6,57 @@ case class Tetromino (){
   var cellType : CellType =  ICell
   var relativeTetromino : Vector[Point] = Vector()
 
- def getTetrominoShape: Vector[Point]  =
+ def getTetrominoShape: Vector[Point] =
  {
-   var newTetromino : Vector[Point] = Vector()
    randIndex match
    {
-     //I //TODO replace below with a function?
+     //I
      case 0 =>
        relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(1, 0), Point(2, 0))
-       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       return newTetromino
 
      //J
      case 1 =>
-          relativeTetromino = Vector(Point(-1,-1),Point(-1,0), Point(0,0), Point(1,0))
-          newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
-          cellType = JCell
+       relativeTetromino = Vector(Point(-1,-1),Point(-1,0), Point(0,0), Point(1,0))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       cellType = JCell
+       return newTetromino
 
      //L
      case 2 =>
        relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(1, 0), Point(1, -1))
-       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = LCell
+       return newTetromino
 
      //O
      case 3 =>
        relativeTetromino = Vector(Point(0, 0), Point(1, 0), Point(1, -1), Point(0, -1))
-       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = OCell
+       return newTetromino
 
-     SCell
+     //S
      case 4 =>
        relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(0, -1), Point(1, -1))
-       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = SCell
+       return newTetromino
 
      //T
      case 5 =>
        relativeTetromino = Vector(Point(-1, 0), Point(0, 0), Point(0, -1), Point(1, 0))
-       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = TCell
+       return newTetromino
 
      //Z
      case 6 =>
        relativeTetromino = Vector(Point(-1, -1), Point(0, -1), Point(0, 0), Point(1, 0))
-       newTetromino = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = ZCell
+       return newTetromino
    }
-   newTetromino
  }
 }
