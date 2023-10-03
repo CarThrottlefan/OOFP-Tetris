@@ -1,109 +1,58 @@
 package tetris.logic
 
-/*case class rotateTetromino(tetromino: Tetromino)
-{
-  class rotateIcell(tetromino: Tetromino)
-  {
-    val tetrominoBody: Vector[Vector[Point]] = tetromino.body
-    val rotatedTetromino: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => rotateLeft(point, 'I')))
-    //rotateLeft(tetromino, 0)
-  }
-
-  class rotateOCell(tetromino: Tetromino) {
-    val tetrominoBody: Vector[Vector[Point]] = tetromino.body
-    val rotatedTetromino: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => rotateLeft(point, 'O')))
-  }
-
-  class rotateOtherCell(tetromino: Tetromino)
-  {
-    val tetrominoBody: Vector[Vector[Point]] = tetromino.body
-    val rotatedTetromino: Vector[Vector[Point]] = tetrominoBody.map(row => row.map(point => rotateLeft(point, ' ')))
-  }
-
-  def rotateLeft(point: Point, typeOfTetromino : Char) : Point =
-  {
-    //val tetrominoBody = tetromino.body
-    //val rotatedTetromino = tetrominoBody.map(row => row.map(point => point.x = point.y, point.y = 0 - point.x))
+abstract class abstractTetromino(tetromino: Tetromino) {
+  def rotateLeft(typeOfTetromino: Char): (Vector[Point], Vector[Point]) = {
     typeOfTetromino match
     {
       case 'I' =>
-        val newX = point.y
-        val newY = 0 - point.x + 1
-        Point(newX, newY)
+        val rotatedRelative = tetromino.relativeTetromino.map(point => Point(point.y, -point.x + 1))
+        val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
+        (rotatedTetromino, rotatedRelative)
 
       case ' ' =>
-        val newX = point.y
-        val newY = 0 - point.x
-        Point(newX, newY)
+        val rotatedRelative = tetromino.relativeTetromino.map(point => Point(point.y, -point.x))
+        val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
+        (rotatedTetromino, rotatedRelative)
 
       case 'O' =>
-        Point(point.x, point.y)
+        (tetromino.body, tetromino.relativeTetromino)
     }
-  }
-}
-*/
 
-abstract class abstractTetromino {
-  def rotateLeft(point: Point, typeOfTetromino: Char): Point = {
-    //val tetrominoBody = tetromino.body
-    //val rotatedTetromino = tetrominoBody.map(row => row.map(point => point.x = point.y, point.y = 0 - point.x))
+  }
+
+  def rotateRight(typeOfTetromino: Char): (Vector[Point], Vector[Point]) = {
     typeOfTetromino match {
       case 'I' =>
-        val newX = point.y
-        val newY = -point.x + 1
-        Point(newX, newY)
+        val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y + 1, point.x))
+        val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
+        (rotatedTetromino, rotatedRelative)
 
       case ' ' =>
-        val newX = point.y
-        val newY = -point.x
-        Point(newX, newY)
+        val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y, point.x))
+        val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
+        (rotatedTetromino, rotatedRelative)
 
       case 'O' =>
-        Point(point.x, point.y)
-    }
-  }
-
-  def rotateRight(point: Point, typeOfTetromino: Char): Point = {
-    typeOfTetromino match {
-      case 'I' =>
-        val newX = -point.y + 1
-        val newY = point.x
-        Point(newX, newY)
-
-      case ' ' =>
-        val newX = -point.y
-        val newY = point.x
-        Point(newX, newY)
-
-      case 'O' =>
-        Point(point.x, point.y)
+        (tetromino.body, tetromino.relativeTetromino)
     }
   }
 }
 
-/*class rotateICell(tetromino: Tetromino) extends abstractTetromino {
-  val tetrominoBody: Vector[Point] = tetromino.body
-  val rotatedLeft: Vector[Point] = rotateICellLeft()
-  val rotatedRight: Vector[Point] = rotateICellRight()
+class rotateICell(tetromino: Tetromino) extends abstractTetromino(tetromino: Tetromino)
+{
+  val (rotatedLeftBody: Vector[Point], rotatedLeftRelative: Vector[Point]) = rotateLeft('I')
+  val (rotatedRightBody: Vector[Point], rotatedRightRelative: Vector[Point]) = rotateRight('I')
 
-  private def rotateICellLeft(): Vector[Point] =
-    tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'I')))
-
-  private def rotateICellRight(): Vector[Point] =
-    tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'I')))
 }
 
-class rotateOtherCell(tetromino: Tetromino) extends abstractTetromino {
-  val tetrominoBody: Vector[Point] = tetromino.body
-  val rotatedLeft: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, ' ')))
-  val rotatedRight: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, ' ')))
+class rotateOtherCell(tetromino: Tetromino) extends abstractTetromino(tetromino: Tetromino)
+{
+  val (rotatedLeftBody: Vector[Point], rotatedLeftRelative: Vector[Point]) = rotateLeft(' ')
+  val (rotatedRightBody: Vector[Point], rotatedRightRelative: Vector[Point]) = rotateRight(' ')
 }
 
-class rotateOCell(tetromino: Tetromino) extends abstractTetromino {
-  val tetrominoBody: Vector[Point] = tetromino.body
-  val rotatedLeft: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateLeft(point, 'O')))
-  val rotatedRight: Vector[Point] = tetrominoBody.map(row => row.map(point => super.rotateRight(point, 'O')))
-}*/
-
-
-
+class rotateOCell(tetromino: Tetromino) extends abstractTetromino(tetromino: Tetromino)
+{
+  val (rotatedLeftBody: Vector[Point], rotatedLeftRelative: Vector[Point]) = rotateLeft('O')
+  val (rotatedRightBody: Vector[Point], rotatedRightRelative: Vector[Point]) = rotateRight('O')
+}
