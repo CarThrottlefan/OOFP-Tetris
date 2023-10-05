@@ -123,26 +123,52 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   def moveLeft(): Unit =
   {
-    if(currGameState.tetromino.body.forall(point => inBounds(point.x - 1, point.y)))
-      moveTetromino(currGameState.tetromino, xDelta = -1, yDelta = 0)
+    if(currGameState.tetromino.body(0).x == 0)
+    {
+      if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(0) != Empty))
+        handleNewTetromino()
+    }
+
+    else
+    {
+      if(currGameState.tetromino.body.forall(point => inBounds(point.x - 1, point.y) && (currGameState.board(point.y)(point.x - 1) == Empty)))
+        {
+          moveTetromino(currGameState.tetromino, xDelta = -1, yDelta = 0)
+        }
+
+      else if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x - 1) != Empty))
+      {
+        handleNewTetromino()
+      }
+    }
+
+
   }
 
   def moveRight(): Unit =
   {
-    if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y)))
-      moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
+    if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y) && (currGameState.board(point.y)(point.x + 1) == Empty)))
+      {
+        moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
+      }
+    else if(currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x + 1) != Empty))
+      {
+        handleNewTetromino()
+      }
   }
 
   def moveDown(): Unit = {
-    if (currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1)))
-      moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+    if (currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
+      {
+        moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+      }
     else
     {
-      reachedBottom()
+      handleNewTetromino()
     }
   }
 
-  def reachedBottom() : Unit = {
+  def handleNewTetromino() : Unit = {
 
     // i loop through the tetromino, and I use this
     //val updatedSeq: Seq[Seq[Int]] = existingSeq.updated(rowIndex, existingSeq(rowIndex).updated(colIndex, newValue))
@@ -170,7 +196,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
   {
     if(currGameState.board(p.y)(p.x) != Empty)
       {
-        return  currGameState.board(p.y)(p.x)
+        return currGameState.board(p.y)(p.x)
       }
     if (currGameState.tetromino.body.contains(p))
       {
