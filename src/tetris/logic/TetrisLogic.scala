@@ -41,6 +41,30 @@ class TetrisLogic(val randomGen: RandomGenerator,
     newTetromino
   }
 
+  def inBounds(newXDelta: Int, newYDelta: Int) : (Boolean) =
+  {
+    if((newXDelta < 0 || newXDelta >= gridDims.width) && newYDelta >= gridDims.height)
+      {
+        return false
+      }
+    if(newXDelta < 0 || newXDelta >= gridDims.width)
+      {
+        return false
+      }
+    if(newYDelta >= gridDims.height)
+      {
+
+        return false
+      }
+    return true
+  }
+
+  /*def isLineFull(currState: gameState) : Unit =
+  {
+    val currBoard = currState.currBoard
+    //val lineFull : Boolean = currBoard.forall(row => row.forall()) //TODO I need to find a way to check if every point on the line is != Empty
+  }*/
+
   def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit =
   {
     tetromino.anchor = Point(tetromino.anchor.x + xDelta, tetromino.anchor.y + yDelta)
@@ -96,16 +120,19 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   def moveLeft(): Unit =
   {
-    moveTetromino(tetromino, xDelta = -1, yDelta = 0)
+    if(tetromino.body.forall(point => inBounds(point.x - 1, point.y)))
+      moveTetromino(tetromino, xDelta = -1, yDelta = 0)
   }
 
   def moveRight(): Unit =
   {
-    moveTetromino(tetromino, xDelta = 1, yDelta = 0)
+    if (tetromino.body.forall(point => inBounds(point.x + 1, point.y)))
+      moveTetromino(tetromino, xDelta = 1, yDelta = 0)
   }
 
   def moveDown(): Unit = {
-    moveTetromino(tetromino, xDelta = 0, yDelta = 1)
+    if (tetromino.body.forall(point => inBounds(point.x, point.y + 1)))
+      moveTetromino(tetromino, xDelta = 0, yDelta = 1)
   }
 
   // TODO implement me
