@@ -19,8 +19,9 @@ class TetrisLogic(val randomGen: RandomGenerator,
   def this() =
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
-  var tetromino : Tetromino = spawnTetromino()// initializes the game
-  tetromino.body = tetromino.getTetrominoShape
+
+  val initTetromino : Tetromino = spawnTetromino()// initializes the game
+  initTetromino.body = initTetromino.getTetrominoShape
 
   def spawnTetromino() : Tetromino =
   {
@@ -40,6 +41,8 @@ class TetrisLogic(val randomGen: RandomGenerator,
       }
     newTetromino
   }
+  var currGameState = new gameState(initTetromino, initialBoard)
+  //currGameState.board = initialBoard
 
   def inBounds(newXDelta: Int, newYDelta: Int) : (Boolean) =
   {
@@ -73,67 +76,89 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   def rotateLeft(): Unit =
   {
-    val tetrominoType = tetromino.cellType
+    val tetrominoType = currGameState.tetromino.cellType
 
     tetrominoType match
     {
       case ICell =>
-        val rotateI = new rotateICell(tetromino)
-        tetromino.body = rotateI.rotatedLeftBody
-        tetromino.relativeTetromino = rotateI.rotatedLeftRelative
+        val rotateI = new rotateICell(currGameState.tetromino)
+        currGameState.tetromino.body = rotateI.rotatedLeftBody
+        currGameState.tetromino.relativeTetromino = rotateI.rotatedLeftRelative
 
       case JCell | LCell | SCell | TCell | ZCell =>
-        val rotateOtherCell = new rotateOtherCell(tetromino)
-        tetromino.body = rotateOtherCell.rotatedLeftBody
-        tetromino.relativeTetromino = rotateOtherCell.rotatedLeftRelative
+        val rotateOtherCell = new rotateOtherCell(currGameState.tetromino)
+        currGameState.tetromino.body = rotateOtherCell.rotatedLeftBody
+        currGameState.tetromino.relativeTetromino = rotateOtherCell.rotatedLeftRelative
 
       case OCell =>
-        val rotateOCell = new rotateOCell(tetromino)
-        tetromino.body = rotateOCell.rotatedLeftBody
-        tetromino.relativeTetromino = rotateOCell.rotatedLeftRelative
+        val rotateOCell = new rotateOCell(currGameState.tetromino)
+        currGameState.tetromino.body = rotateOCell.rotatedLeftBody
+        currGameState.tetromino.relativeTetromino = rotateOCell.rotatedLeftRelative
     }
   }
 
   // TODO implement me
   def rotateRight(): Unit =
   {
-    val tetrominoType = tetromino.cellType
+    val tetrominoType = currGameState.tetromino.cellType
 
     tetrominoType match
     {
       case ICell =>
-        val rotateI = new rotateICell(tetromino)
-        tetromino.body = rotateI.rotatedRightBody
-        tetromino.relativeTetromino = rotateI.rotatedRightRelative
+        val rotateI = new rotateICell(currGameState.tetromino)
+        currGameState.tetromino.body = rotateI.rotatedRightBody
+        currGameState.tetromino.relativeTetromino = rotateI.rotatedRightRelative
 
       case JCell | LCell | SCell | TCell | ZCell =>
-        val rotateOtherCell = new rotateOtherCell(tetromino)
-        tetromino.body = rotateOtherCell.rotatedRightBody
-        tetromino.relativeTetromino = rotateOtherCell.rotatedRightRelative
+        val rotateOtherCell = new rotateOtherCell(currGameState.tetromino)
+        currGameState.tetromino.body = rotateOtherCell.rotatedRightBody
+        currGameState.tetromino.relativeTetromino = rotateOtherCell.rotatedRightRelative
 
       case OCell =>
-        val rotateOCell = new rotateOCell(tetromino)
-        tetromino.body = rotateOCell.rotatedRightBody
-        tetromino.relativeTetromino = rotateOCell.rotatedRightRelative
+        val rotateOCell = new rotateOCell(currGameState.tetromino)
+        currGameState.tetromino.body = rotateOCell.rotatedRightBody
+        currGameState.tetromino.relativeTetromino = rotateOCell.rotatedRightRelative
     }
   }
 
   def moveLeft(): Unit =
   {
-    if(tetromino.body.forall(point => inBounds(point.x - 1, point.y)))
-      moveTetromino(tetromino, xDelta = -1, yDelta = 0)
+    if(currGameState.tetromino.body.forall(point => inBounds(point.x - 1, point.y)))
+      moveTetromino(currGameState.tetromino, xDelta = -1, yDelta = 0)
   }
 
   def moveRight(): Unit =
   {
-    if (tetromino.body.forall(point => inBounds(point.x + 1, point.y)))
-      moveTetromino(tetromino, xDelta = 1, yDelta = 0)
+    if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y)))
+      moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
   }
 
   def moveDown(): Unit = {
-    if (tetromino.body.forall(point => inBounds(point.x, point.y + 1)))
-      moveTetromino(tetromino, xDelta = 0, yDelta = 1)
+    if (currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1)))
+      moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+    else
+    {
+      reachedBottom()
+    }
   }
+
+  def reachedBottom() : Unit = {
+
+    // i loop through the tetromino, and I use this
+    //val updatedSeq: Seq[Seq[Int]] = existingSeq.updated(rowIndex, existingSeq(rowIndex).updated(colIndex, newValue))
+    // with each x of a point replaces rowIndex, colIndex is the y and newValue is CellType
+    var newBoard : Seq[Seq[CellType]] = currGameState.board
+    currGameState.tetromino.body.foreach { point =>
+      newBoard = currGameState.board.updated(point.y, currGameState.board(point.y).updated(point.x, currGameState.tetromino.cellType))
+      currGameState.board = newBoard
+    }
+    //currGameState.board = newBoard
+    val newTetromino = spawnTetromino()
+    currGameState.tetromino = newTetromino
+    currGameState.tetromino.body = newTetromino.getTetrominoShape
+  }
+
+
 
   // TODO implement me
   def doHardDrop(): Unit = ()
@@ -143,14 +168,16 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   def getCellType(p : Point): CellType =
   {
-    if (tetromino.body.contains(p))
+    if(currGameState.board(p.y)(p.x) != Empty)
       {
-        return tetromino.cellType
+        return  currGameState.board(p.y)(p.x)
       }
-    else
+    if (currGameState.tetromino.body.contains(p))
       {
-        return Empty
+        return currGameState.tetromino.cellType
       }
+
+    return Empty
   }
 }
 
