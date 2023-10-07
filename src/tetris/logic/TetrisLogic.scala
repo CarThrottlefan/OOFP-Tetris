@@ -28,7 +28,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
     val randomNum : Int = randomGen.randomInt(7) // calls the random generator to generate
                                                         // a random tetromino
     val newTetromino = Tetromino()
-    newTetromino.randIndex = randomNum
+    newTetromino.randIndex = randomNum //TODO change it back to randomNum
     if(gridDims.width % 2 == 0)
       {
         val anchorX : Int = gridDims.width / 2 - 1
@@ -62,11 +62,23 @@ class TetrisLogic(val randomGen: RandomGenerator,
     return true
   }
 
-  /*def isLineFull(currState: gameState) : Unit =
+  def isLineFull() : Unit =
   {
-    val currBoard = currState.currBoard
+    //val currBoard = currState.currBoard
+    //currGameState.board.updated(point.y, currGameState.board(point.y).updated(point.x, currGameState.tetromino.cellType))
+    if (currGameState.board.exists(row => !row.contains(Empty)))
+      {
+        var newGameBoard = currGameState.board
+        while(newGameBoard.exists(row => !row.contains(Empty)))
+          {
+            val fullRow: Seq[CellType] = newGameBoard.find(row => !row.contains(Empty)).get//gets the full row
+            val fullRowIndex : Int = newGameBoard.indexOf(fullRow)
+            newGameBoard = currGameState.clearLine(newGameBoard, fullRowIndex)
+          }
+          currGameState.board = newGameBoard
+      }
     //val lineFull : Boolean = currBoard.forall(row => row.forall()) //TODO I need to find a way to check if every point on the line is != Empty
-  }*/
+  }
 
   def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit =
   {
@@ -123,7 +135,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   def moveLeft(): Unit =
   {
-    if(currGameState.tetromino.body(0).x == 0)
+    if(currGameState.tetromino.body.exists(point => point.x == 0))
     {
       if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(0) != Empty))
         handleNewTetromino()
@@ -134,6 +146,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
       if(currGameState.tetromino.body.forall(point => inBounds(point.x - 1, point.y) && (currGameState.board(point.y)(point.x - 1) == Empty)))
         {
           moveTetromino(currGameState.tetromino, xDelta = -1, yDelta = 0)
+          //isLineFull()
         }
 
       else if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x - 1) != Empty))
@@ -147,20 +160,31 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
   def moveRight(): Unit =
   {
-    if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y) && (currGameState.board(point.y)(point.x + 1) == Empty)))
+    if(currGameState.tetromino.body.exists(point => point.x == gridDims.width))
       {
-        moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
+        if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(gridDims.width) != Empty))
+          handleNewTetromino()
       }
-    else if(currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x + 1) != Empty))
-      {
-        handleNewTetromino()
-      }
+    else
+     {
+        if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y) && (currGameState.board(point.y)(point.x + 1) == Empty)))
+          {
+            moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
+            //isLineFull()
+          }
+        else if(currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x + 1) != Empty))
+          {
+            handleNewTetromino()
+          }
+     }
   }
 
-  def moveDown(): Unit = {
+  def moveDown(): Unit =
+  {
     if (currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
       {
         moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+        //isLineFull()
       }
     else
     {
@@ -180,6 +204,7 @@ class TetrisLogic(val randomGen: RandomGenerator,
     }
     //currGameState.board = newBoard
     val newTetromino = spawnTetromino()
+    isLineFull()
     currGameState.tetromino = newTetromino
     currGameState.tetromino.body = newTetromino.getTetrominoShape
   }
@@ -187,7 +212,13 @@ class TetrisLogic(val randomGen: RandomGenerator,
 
 
   // TODO implement me
-  def doHardDrop(): Unit = ()
+  def doHardDrop(): Unit = {
+    while(currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
+      {
+        moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+      }
+      handleNewTetromino()
+  }
 
   // TODO implement me
   def isGameOver: Boolean = false
