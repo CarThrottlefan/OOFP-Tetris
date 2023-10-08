@@ -46,7 +46,6 @@ class rotateICell(tetromino: Tetromino) extends abstractTetromino(tetromino: Tet
 {
   val (rotatedLeftBody: Vector[Point], rotatedLeftRelative: Vector[Point]) = rotateLeft('I')
   val (rotatedRightBody: Vector[Point], rotatedRightRelative: Vector[Point]) = rotateRight('I')
-
 }
 
 class rotateOtherCell(tetromino: Tetromino) extends abstractTetromino(tetromino: Tetromino)

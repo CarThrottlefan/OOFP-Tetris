@@ -20,7 +20,9 @@ class TetrisLogic(val randomGen: RandomGenerator,
     this(new ScalaRandomGen(), DefaultDims, makeEmptyBoard(DefaultDims))
 
 
+  var currGameState = new gameState(initialBoard)
   val initTetromino : Tetromino = spawnTetromino()// initializes the game
+  currGameState.tetromino = initTetromino
   initTetromino.body = initTetromino.getTetrominoShape
 
   def spawnTetromino() : Tetromino =
@@ -29,6 +31,8 @@ class TetrisLogic(val randomGen: RandomGenerator,
                                                         // a random tetromino
     val newTetromino = Tetromino()
     newTetromino.randIndex = randomNum //TODO change it back to randomNum
+
+    //newTetromino.randIndex = randomNum
     if(gridDims.width % 2 == 0)
       {
         val anchorX : Int = gridDims.width / 2 - 1
@@ -39,9 +43,9 @@ class TetrisLogic(val randomGen: RandomGenerator,
         val anchorX : Int = gridDims.width / 2
         newTetromino.anchor = Point(anchorX, 1)
       }
-    newTetromino
+      newTetromino
   }
-  var currGameState = new gameState(initTetromino, initialBoard)
+
   //currGameState.board = initialBoard
 
   def inBounds(newXDelta: Int, newYDelta: Int) : (Boolean) =
@@ -77,7 +81,6 @@ class TetrisLogic(val randomGen: RandomGenerator,
           }
           currGameState.board = newGameBoard
       }
-    //val lineFull : Boolean = currBoard.forall(row => row.forall()) //TODO I need to find a way to check if every point on the line is != Empty
   }
 
   def moveTetromino(tetromino: Tetromino, xDelta: Int, yDelta: Int) : Unit =
@@ -94,18 +97,27 @@ class TetrisLogic(val randomGen: RandomGenerator,
     {
       case ICell =>
         val rotateI = new rotateICell(currGameState.tetromino)
-        currGameState.tetromino.body = rotateI.rotatedLeftBody
-        currGameState.tetromino.relativeTetromino = rotateI.rotatedLeftRelative
+        if(rotateI.rotatedLeftBody.forall(point => inBounds(point.x, point.y) && (currGameState.board(point.y)(point.x) == Empty)))
+          {
+            currGameState.tetromino.body = rotateI.rotatedLeftBody
+            currGameState.tetromino.relativeTetromino = rotateI.rotatedLeftRelative
+          }
 
       case JCell | LCell | SCell | TCell | ZCell =>
         val rotateOtherCell = new rotateOtherCell(currGameState.tetromino)
-        currGameState.tetromino.body = rotateOtherCell.rotatedLeftBody
-        currGameState.tetromino.relativeTetromino = rotateOtherCell.rotatedLeftRelative
+        if (rotateOtherCell.rotatedLeftBody.forall(point => inBounds(point.x, point.y) && (currGameState.board(point.y)(point.x) == Empty)))
+        {
+          currGameState.tetromino.body = rotateOtherCell.rotatedLeftBody
+          currGameState.tetromino.relativeTetromino = rotateOtherCell.rotatedLeftRelative
+        }
 
       case OCell =>
         val rotateOCell = new rotateOCell(currGameState.tetromino)
-        currGameState.tetromino.body = rotateOCell.rotatedLeftBody
-        currGameState.tetromino.relativeTetromino = rotateOCell.rotatedLeftRelative
+        if (rotateOCell.rotatedLeftBody.forall(point => inBounds(point.x, point.y) && (currGameState.board(point.y)(point.x) == Empty)))
+        {
+          currGameState.tetromino.body = rotateOCell.rotatedLeftBody
+          currGameState.tetromino.relativeTetromino = rotateOCell.rotatedLeftRelative
+        }
     }
   }
 
@@ -118,78 +130,94 @@ class TetrisLogic(val randomGen: RandomGenerator,
     {
       case ICell =>
         val rotateI = new rotateICell(currGameState.tetromino)
-        currGameState.tetromino.body = rotateI.rotatedRightBody
-        currGameState.tetromino.relativeTetromino = rotateI.rotatedRightRelative
+        if (rotateI.rotatedRightBody.forall(point => inBounds(point.x, point.y) && (currGameState.board(point.y)(point.x) == Empty)))
+        {
+          currGameState.tetromino.body = rotateI.rotatedRightBody
+          currGameState.tetromino.relativeTetromino = rotateI.rotatedRightRelative
+        }
 
       case JCell | LCell | SCell | TCell | ZCell =>
         val rotateOtherCell = new rotateOtherCell(currGameState.tetromino)
-        currGameState.tetromino.body = rotateOtherCell.rotatedRightBody
-        currGameState.tetromino.relativeTetromino = rotateOtherCell.rotatedRightRelative
+        if(rotateOtherCell.rotatedRightBody.forall(point => inBounds(point.x, point.y) && (currGameState.board(point.y)(point.x) == Empty)))
+          {
+            currGameState.tetromino.body = rotateOtherCell.rotatedRightBody
+            currGameState.tetromino.relativeTetromino = rotateOtherCell.rotatedRightRelative
+          }
 
       case OCell =>
         val rotateOCell = new rotateOCell(currGameState.tetromino)
-        currGameState.tetromino.body = rotateOCell.rotatedRightBody
-        currGameState.tetromino.relativeTetromino = rotateOCell.rotatedRightRelative
+        if(rotateOCell.rotatedRightBody.forall(point => inBounds(point.x, point.y) && (currGameState.board(point.y)(point.x) == Empty)))
+          {
+            currGameState.tetromino.body = rotateOCell.rotatedRightBody
+            currGameState.tetromino.relativeTetromino = rotateOCell.rotatedRightRelative
+          }
     }
   }
 
   def moveLeft(): Unit =
   {
-    if(currGameState.tetromino.body.exists(point => point.x == 0))
-    {
-      if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(0) != Empty))
-        handleNewTetromino()
-    }
-
-    else
-    {
-      if(currGameState.tetromino.body.forall(point => inBounds(point.x - 1, point.y) && (currGameState.board(point.y)(point.x - 1) == Empty)))
+    if(!currGameState.gameOver)
+      {
+        if(currGameState.tetromino.body.exists(point => point.x == 0))
         {
-          moveTetromino(currGameState.tetromino, xDelta = -1, yDelta = 0)
-          //isLineFull()
+          if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(0) != Empty))
+            handleNewTetromino()
         }
 
-      else if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x - 1) != Empty))
-      {
-        handleNewTetromino()
+        else
+        {
+          if(currGameState.tetromino.body.forall(point => inBounds(point.x - 1, point.y) && (currGameState.board(point.y)(point.x - 1) == Empty)))
+            {
+              moveTetromino(currGameState.tetromino, xDelta = -1, yDelta = 0)
+              //isLineFull()
+            }
+
+          else if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x - 1) != Empty))
+          {
+            handleNewTetromino()
+          }
       }
     }
-
-
   }
 
   def moveRight(): Unit =
   {
-    if(currGameState.tetromino.body.exists(point => point.x == gridDims.width))
+    if(!currGameState.gameOver)
       {
-        if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(gridDims.width) != Empty))
-          handleNewTetromino()
+        if(currGameState.tetromino.body.exists(point => point.x == gridDims.width - 1))
+          {
+            if (currGameState.tetromino.body.forall(point => currGameState.board(point.y)(gridDims.width - 1) != Empty))
+              handleNewTetromino()
+          }
+        else
+         {
+            if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y) && (currGameState.board(point.y)(point.x + 1) == Empty)))
+              {
+                moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
+                //isLineFull()
+              }
+            else if(currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x + 1) != Empty))
+              {
+                handleNewTetromino()
+              }
+         }
       }
-    else
-     {
-        if (currGameState.tetromino.body.forall(point => inBounds(point.x + 1, point.y) && (currGameState.board(point.y)(point.x + 1) == Empty)))
-          {
-            moveTetromino(currGameState.tetromino, xDelta = 1, yDelta = 0)
-            //isLineFull()
-          }
-        else if(currGameState.tetromino.body.forall(point => currGameState.board(point.y)(point.x + 1) != Empty))
-          {
-            handleNewTetromino()
-          }
-     }
   }
 
   def moveDown(): Unit =
   {
-    if (currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
+    if(!currGameState.gameOver)
       {
-        moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
-        //isLineFull()
+        if (currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
+          {
+            moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+            //isLineFull()
+          }
+        else
+        {
+          handleNewTetromino()
+        }
       }
-    else
-    {
-      handleNewTetromino()
-    }
   }
 
   def handleNewTetromino() : Unit = {
@@ -204,24 +232,39 @@ class TetrisLogic(val randomGen: RandomGenerator,
     }
     //currGameState.board = newBoard
     val newTetromino = spawnTetromino()
+    newTetromino.body = newTetromino.getTetrominoShape
     isLineFull()
-    currGameState.tetromino = newTetromino
-    currGameState.tetromino.body = newTetromino.getTetrominoShape
+    if (newTetromino.body.exists(point => currGameState.board(point.y)(point.x) != Empty))
+    {
+      currGameState.gameOver = true
+      return
+    }
+    else
+      {
+        currGameState.tetromino = newTetromino
+        currGameState.tetromino.body = newTetromino.getTetrominoShape
+      }
   }
 
 
 
   // TODO implement me
   def doHardDrop(): Unit = {
-    while(currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
+    if(!currGameState.gameOver)
       {
-        moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+        while(currGameState.tetromino.body.forall(point => inBounds(point.x, point.y + 1) && (currGameState.board(point.y + 1)(point.x) == Empty)))
+          {
+            moveTetromino(currGameState.tetromino, xDelta = 0, yDelta = 1)
+          }
+          handleNewTetromino()
       }
-      handleNewTetromino()
   }
 
   // TODO implement me
-  def isGameOver: Boolean = false
+  def isGameOver: Boolean =
+  {
+    currGameState.gameOver
+  }
 
   def getCellType(p : Point): CellType =
   {

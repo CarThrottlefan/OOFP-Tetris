@@ -57,6 +57,12 @@ case class Tetromino (){
        val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = ZCell
        return newTetromino
+
+     case 7 =>
+       relativeTetromino = Vector(Point(0, 0), Point(0, 0), Point(0, 0), Point(0, 0))
+       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x, point.y))
+       cellType = Empty
+       return newTetromino
    }
  }
 }

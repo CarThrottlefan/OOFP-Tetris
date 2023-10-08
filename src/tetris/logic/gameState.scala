@@ -1,9 +1,10 @@
 package tetris.logic
 
-class gameState(currTetromino : Tetromino, currBoard : Seq[Seq[CellType]])
+class gameState(currBoard : Seq[Seq[CellType]])
 {
-  var tetromino : Tetromino = currTetromino
+  var tetromino : Tetromino = Tetromino()
   var board : Seq[Seq[CellType]] = currBoard
+  var gameOver : Boolean = false
   def clearLine(board: Seq[Seq[CellType]], rowIndex : Int) : Seq[Seq[CellType]] = {
     var newBoard : Seq[Seq[CellType]] = board
 
