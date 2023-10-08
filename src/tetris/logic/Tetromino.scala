@@ -1,5 +1,6 @@
 package tetris.logic
-case class Tetromino (){
+case class Tetromino ()
+{
   var randIndex : Int = 0
   var anchor : Point = Point(0,0)
   var body : Vector[Point] = Vector[Point] ()
@@ -56,12 +57,6 @@ case class Tetromino (){
        relativeTetromino = Vector(Point(-1, -1), Point(0, -1), Point(0, 0), Point(1, 0))
        val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x + anchor.x, point.y + anchor.y))
        cellType = ZCell
-       return newTetromino
-
-     case 7 =>
-       relativeTetromino = Vector(Point(0, 0), Point(0, 0), Point(0, 0), Point(0, 0))
-       val newTetromino:Vector[Point] = relativeTetromino.map(point => Point(point.x, point.y))
-       cellType = Empty
        return newTetromino
    }
  }

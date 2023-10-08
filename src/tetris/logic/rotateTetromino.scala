@@ -9,17 +9,16 @@ abstract class abstractTetromino(tetromino: Tetromino)
       case 'I' =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(point.y, -point.x + 1))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
-        (rotatedTetromino, rotatedRelative)
+        return (rotatedTetromino, rotatedRelative)
 
       case ' ' =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(point.y, -point.x))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
-        (rotatedTetromino, rotatedRelative)
+        return (rotatedTetromino, rotatedRelative)
 
       case 'O' =>
-        (tetromino.body, tetromino.relativeTetromino)
+        return (tetromino.body, tetromino.relativeTetromino)
     }
-
   }
 
   def rotateRight(typeOfTetromino: Char): (Vector[Point], Vector[Point]) =
@@ -29,15 +28,15 @@ abstract class abstractTetromino(tetromino: Tetromino)
       case 'I' =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y + 1, point.x))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
-        (rotatedTetromino, rotatedRelative)
+        return (rotatedTetromino, rotatedRelative)
 
       case ' ' =>
         val rotatedRelative = tetromino.relativeTetromino.map(point => Point(-point.y, point.x))
         val rotatedTetromino = rotatedRelative.map(point => Point(tetromino.anchor.x + point.x, tetromino.anchor.y + point.y))
-        (rotatedTetromino, rotatedRelative)
+        return (rotatedTetromino, rotatedRelative)
 
       case 'O' =>
-        (tetromino.body, tetromino.relativeTetromino)
+        return (tetromino.body, tetromino.relativeTetromino)
     }
   }
 }
